@@ -268,15 +268,15 @@
 
           if (code === 38) {
             if (spinning !== 'up') {
-              upOnce();
-              startUpSpin();
+              upOnce(ev);
+              startUpSpin(ev);
             }
             ev.preventDefault();
           }
           else if (code === 40) {
             if (spinning !== 'down') {
-              downOnce();
-              startDownSpin();
+              downOnce(ev);
+              startDownSpin(ev);
             }
             ev.preventDefault();
           }
@@ -286,10 +286,10 @@
           var code = ev.keyCode || ev.which;
 
           if (code === 38) {
-            stopSpin();
+            stopSpin(ev);
           }
           else if (code === 40) {
-            stopSpin();
+            stopSpin(ev);
           }
         });
 
@@ -302,8 +302,8 @@
 
           if (code === 32 || code === 13) {
             if (spinning !== 'down') {
-              downOnce();
-              startDownSpin();
+              downOnce(ev);
+              startDownSpin(ev);
             }
             ev.preventDefault();
           }
@@ -313,7 +313,7 @@
           var code = ev.keyCode || ev.which;
 
           if (code === 32 || code === 13) {
-            stopSpin();
+            stopSpin(ev);
           }
         });
 
@@ -322,8 +322,8 @@
 
           if (code === 32 || code === 13) {
             if (spinning !== 'up') {
-              upOnce();
-              startUpSpin();
+              upOnce(ev);
+              startUpSpin(ev);
             }
             ev.preventDefault();
           }
@@ -333,7 +333,7 @@
           var code = ev.keyCode || ev.which;
 
           if (code === 32 || code === 13) {
-            stopSpin();
+            stopSpin(ev);
           }
         });
 
@@ -344,8 +344,8 @@
             return;
           }
 
-          downOnce();
-          startDownSpin();
+          downOnce(ev);
+          startDownSpin(ev);
 
           ev.preventDefault();
           ev.stopPropagation();
@@ -358,8 +358,8 @@
             return;
           }
 
-          downOnce();
-          startDownSpin();
+          downOnce(ev);
+          startDownSpin(ev);
 
           ev.preventDefault();
           ev.stopPropagation();
@@ -372,8 +372,8 @@
             return;
           }
 
-          upOnce();
-          startUpSpin();
+          upOnce(ev);
+          startUpSpin(ev);
 
           ev.preventDefault();
           ev.stopPropagation();
@@ -386,8 +386,8 @@
             return;
           }
 
-          upOnce();
-          startUpSpin();
+          upOnce(ev);
+          startUpSpin(ev);
 
           ev.preventDefault();
           ev.stopPropagation();
@@ -399,7 +399,7 @@
           }
 
           ev.stopPropagation();
-          stopSpin();
+          stopSpin(ev);
         });
 
         elements.down.on('mouseout touchleave touchend touchcancel', function(ev) {
@@ -408,7 +408,7 @@
           }
 
           ev.stopPropagation();
-          stopSpin();
+          stopSpin(ev);
         });
 
         elements.down.on('mousemove touchmove', function(ev) {
@@ -435,7 +435,7 @@
           }
 
           ev.preventDefault();
-          stopSpin();
+          stopSpin(ev);
         });
 
         $(document).on(_scopeEventNames(['mousemove', 'touchmove', 'scroll', 'scrollstart'], _currentSpinnerId).join(' '), function(ev) {
@@ -444,7 +444,7 @@
           }
 
           ev.preventDefault();
-          stopSpin();
+          stopSpin(ev);
         });
 
         originalinput.on('mousewheel DOMMouseScroll', function(ev) {
@@ -458,35 +458,35 @@
           ev.preventDefault();
 
           if (delta < 0) {
-            downOnce();
+            downOnce(ev);
           }
           else {
-            upOnce();
+            upOnce(ev);
           }
         });
       }
 
       function _bindEventsInterface() {
-        originalinput.on('touchspin.uponce', function() {
-          stopSpin();
-          upOnce();
+        originalinput.on('touchspin.uponce', function(ev) {
+          stopSpin(ev);
+          upOnce(ev);
         });
 
-        originalinput.on('touchspin.downonce', function() {
-          stopSpin();
-          downOnce();
+        originalinput.on('touchspin.downonce', function(ev) {
+          stopSpin(ev);
+          downOnce(ev);
         });
 
-        originalinput.on('touchspin.startupspin', function() {
-          startUpSpin();
+        originalinput.on('touchspin.startupspin', function(ev) {
+          startUpSpin(ev);
         });
 
-        originalinput.on('touchspin.startdownspin', function() {
-          startDownSpin();
+        originalinput.on('touchspin.startdownspin', function(ev) {
+          startDownSpin(ev);
         });
 
-        originalinput.on('touchspin.stopspin', function() {
-          stopSpin();
+        originalinput.on('touchspin.stopspin', function(ev) {
+          stopSpin(ev);
         });
 
         originalinput.on('touchspin.updatesettings', function(e, newsettings) {
@@ -575,7 +575,7 @@
         }
       }
 
-      function upOnce() {
+      function upOnce(ev) {
         _checkValue();
 
         value = parseFloat(elements.input.val());
@@ -590,8 +590,8 @@
 
         if (value > settings.max) {
           value = settings.max;
-          originalinput.trigger('touchspin.on.max');
-          stopSpin();
+          originalinput.trigger($.Event( 'touchspin.on.max', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
+          stopSpin(ev);
         }
 
         elements.input.val(Number(value).toFixed(settings.decimals));
@@ -601,7 +601,7 @@
         }
       }
 
-      function downOnce() {
+      function downOnce(ev) {
         _checkValue();
 
         value = parseFloat(elements.input.val());
@@ -616,8 +616,8 @@
 
         if (value < settings.min) {
           value = settings.min;
-          originalinput.trigger('touchspin.on.min');
-          stopSpin();
+          originalinput.trigger($.Event( 'touchspin.on.min', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
+          stopSpin(ev);
         }
 
         elements.input.val(value.toFixed(settings.decimals));
@@ -627,41 +627,41 @@
         }
       }
 
-      function startDownSpin() {
-        stopSpin();
+      function startDownSpin(ev) {
+        stopSpin(ev);
 
         spincount = 0;
         spinning = 'down';
 
-        originalinput.trigger('touchspin.on.startspin');
-        originalinput.trigger('touchspin.on.startdownspin');
+        originalinput.trigger($.Event( 'touchspin.on.startspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
+        originalinput.trigger($.Event( 'touchspin.on.startdownspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
 
         downDelayTimeout = setTimeout(function() {
           downSpinTimer = setInterval(function() {
             spincount++;
-            downOnce();
+            downOnce(ev);
           }, settings.stepinterval);
         }, settings.stepintervaldelay);
       }
 
-      function startUpSpin() {
-        stopSpin();
+      function startUpSpin(ev) {
+        stopSpin(ev);
 
         spincount = 0;
         spinning = 'up';
 
-        originalinput.trigger('touchspin.on.startspin');
-        originalinput.trigger('touchspin.on.startupspin');
+        originalinput.trigger($.Event( 'touchspin.on.startspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
+        originalinput.trigger($.Event( 'touchspin.on.startspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
 
         upDelayTimeout = setTimeout(function() {
           upSpinTimer = setInterval(function() {
             spincount++;
-            upOnce();
+            upOnce(ev);
           }, settings.stepinterval);
         }, settings.stepintervaldelay);
       }
 
-      function stopSpin() {
+      function stopSpin(ev) {
         clearTimeout(downDelayTimeout);
         clearTimeout(upDelayTimeout);
         clearInterval(downSpinTimer);
@@ -669,12 +669,12 @@
 
         switch (spinning) {
           case 'up':
-            originalinput.trigger('touchspin.on.stopupspin');
-            originalinput.trigger('touchspin.on.stopspin');
+            originalinput.trigger($.Event( 'touchspin.on.stopupspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
+            originalinput.trigger($.Event( 'touchspin.on.stopspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
             break;
           case 'down':
-            originalinput.trigger('touchspin.on.stopdownspin');
-            originalinput.trigger('touchspin.on.stopspin');
+            originalinput.trigger($.Event( 'touchspin.on.stopdownspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
+            originalinput.trigger($.Event( 'touchspin.on.stopspin', { ctrlKey: ev.ctrlKey || false, metaKey: ev.metaKey || false } ));
             break;
         }
 
